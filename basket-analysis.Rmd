@@ -1,0 +1,126 @@
+---
+title: "Basket Analysis"
+author: "Gustavo Cabelo"
+
+output: 
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+---
+
+******
+# Introduction
+## Goal
+******
+
+Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites.
+
+******
+## Dataset explanation
+******
+
+2 documents were used for this analysis:
+
+******
+### CSV with online transactions
+******
+Dataset with **9835 transactions**
+
+******    
+### List of products
+******
+A PDF file listing all the products available:
+**125 products** -
+**17 products type**
+
+******
+# Preprocessing
+******
+
+Loading the libraries
+
+```{r,eval=TRUE,echo=TRUE,, error=FALSE, message=FALSE, warning=FALSE,collapse=TRUE}
+require(dplyr)
+require(magrittr)
+require(arules)
+require(arulesViz)
+require(ggplot2)
+require(gridExtra)
+require(graphics)
+```
+
+Loading the given transaction file 
+
+```{r,eval=TRUE,echo=TRUE, error=FALSE, message=FALSE, warning=FALSE}
+transactions <- read.transactions(paste0(getwd(),"/Files/ElectronidexTransactions2017.csv"), format = c("basket","single"), sep = ",", rm.duplicates = F)
+
+
+```
+
+Loading it as dataframe 
+
+```{r,eval=TRUE,echo=TRUE, error=FALSE, message=FALSE, warning=FALSE}
+df <- read.csv(paste0(getwd(),"/Files/ElectronidexTransactions2017.csv"), header = F)
+
+
+```
+
+Understand the transaction file
+
+```{r,eval=TRUE,echo=TRUE}
+
+summary(transactions)
+
+```
+
+Remove the transaction with 0 items
+
+```{r,eval=TRUE,echo=TRUE}
+which(size(transactions) == 0)
+transactions <- transactions[-which(size(transactions) == 0),]
+
+```
+
+Double check if Rows were removed
+
+```{r,eval=TRUE,echo=TRUE}
+
+which(size(transactions) == 0) # Now we are sure there is no longer transactions with items <=0
+
+```
+
+******
+# Data Analysis
+## Visualization
+******
+
+<!-- Create Vector of transactional data -->
+
+<!-- ```{r,eval=TRUE,echo=TRUE} -->
+<!-- transview <- c(size(transactions)) #This is needed for visualization purposes -->
+
+<!-- ``` -->
+
+
+Histogram
+```{r,eval=TRUE,echo=TRUE}
+  hist(size(transactions), breaks = 50, col = 'grey', xlab = "items x transactions", main = "Histogram")
+  
+ # image: ![Alt text](/Profissional/Ubiqum/Data Analytics - Understanding customers/Programa 2017.02/Course 2 - Predicting Profitability and Customer Preferences 2017/Task 3 - Multiple Regression in R/Git-repository/basket-analysis_files/figure-html/Histogram.png)
+  # In the histogram and boxplot is clearly shown that the average amount of items per transaction goes from 2 to 6.
+
+```
+
+Box Plot
+```{r,eval=TRUE,echo=TRUE}
+boxplot(size(transactions), outline = FALSE, main="Distribution: items x transactions", ylab="Number of items")
+
+```
+
+    In the previous plots we can clearly see that the transactions have in average between 2 to 6 products 
+    
+#List items####
+itemLabels <- as.data.frame(itemLabels(transactions))
