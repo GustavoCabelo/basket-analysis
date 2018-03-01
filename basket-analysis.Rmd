@@ -19,22 +19,22 @@ output:
 Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites..
 
 ******
-## Dataset explanation
+# Dataset explanation
 ******
 
-2 documents were used for this analysis:
+**2 documents** were used for this analysis:
 
-******
-### CSV with online transactions
-******
-Dataset with **9835 transactions**
 
-******    
-### List of products
-******
-A PDF file listing all the products available:
-**125 products** -
-**17 products type**
+## Transaction File
+
+  A CSV dataset with **9835 online transactions**
+
+## List of products
+
+A PDF file listing all the products available
+
+  - **125 products**
+  - **17 products type**
 
 ******
 # Preprocessing
@@ -53,7 +53,7 @@ require(graphics)
 require(corrplot)
 ```
 
-Loading the given transaction file 
+Loading the transaction file in a "transaction" extension. Using this extension instead as normal DF enables us to analyze the composition of each transaction and create association rules with apriori.
 
 ```{r,eval=TRUE,echo=TRUE, error=FALSE, message=FALSE, warning=FALSE}
 transactions <- read.transactions(paste0(getwd(),"/Files/ElectronidexTransactions2017.csv"), format = c("basket","single"), sep = ",", rm.duplicates = F)
@@ -61,15 +61,7 @@ transactions <- read.transactions(paste0(getwd(),"/Files/ElectronidexTransaction
 
 ```
 
-Loading it as dataframe 
-
-```{r,eval=TRUE,echo=TRUE, error=FALSE, message=FALSE, warning=FALSE}
-df <- read.csv(paste0(getwd(),"/Files/ElectronidexTransactions2017.csv"), header = F)
-
-
-```
-
-Understand the transaction file
+Understanding the transaction file
 
 ```{r,eval=TRUE,echo=TRUE}
 
@@ -77,7 +69,7 @@ summary(transactions)
 
 ```
 
-Remove the transaction with 0 items
+As saw in the summary, there were observations with no transactions (min = 0) Remove the transaction with 0 items
 
 ```{r,eval=TRUE,echo=TRUE}
 which(size(transactions) == 0)
@@ -266,7 +258,7 @@ options(width = 800)
 ```
 
 In the TOP 20 rules, all of them have either "iMac" or "HP Laptop" as the LHS product, the TOP 2 best-sellers.
-Although they are set as the consequence, in case they are were the Antecedent (RHS), the only difference in the metrics would be the "confidence", however it already gives important insights about the strenght of the rules concerning these items in the basket.
+Although they are set as the consequence, in case they are were the Antecedent (RHS), the difference would be the "confidence" level, however it already gives important insights about the strenght of the rules concerning these items in the basket.
 
 
 ******
@@ -277,8 +269,7 @@ The next step was to run the “apriori” function in R in order to identify th
 The following metrics were adopted as threshold:
 
 * Parameters applied
-    * Frequency > 2%
-    *	Confidence > 20%
+    * rules threshold (support, confidence and lift)
     *	Minimum quantity of items = 2
     *	Maximum quantity of items = 2
 
@@ -403,6 +394,10 @@ plot(rules_MacBookAir, method="graph")#,
 #control=list(type="items"))
 
 ```
+    **Confidence level exception** 
+    * confidence > 0.15
+    
+    Otherwise no rule would be created.
 
 >6- Lenovo Desktop
 ```{r,eval=TRUE,echo=FALSE, warning=FALSE, results= FALSE}
@@ -447,3 +442,25 @@ plot(rules_DellDesktop, method="graph")#,
 #control=list(type="items"))
 
 ```
+
+******
+## Association between 3 Products
+******
+The following metrics were adopted as threshold:
+
+* Parameters applied
+    * rules threshold (support, confidence and lift)
+    *	Minimum quantity of items = 2
+    *	Maximum quantity of items = 2
+
+******
+### Reccomended products for baskets that contain as first product
+******
+
+    **Metrics Legend**
+    - LHS: Antecedent
+    - RHS: Consequent
+    - support: indicates how frequently the item / combination appear in the dataset
+    - confidence: indicates the number of times the IF/THEN statement on the data are true.
+    - lift: indicates the ratio between the observed divided by the expected number of occurences.
+
