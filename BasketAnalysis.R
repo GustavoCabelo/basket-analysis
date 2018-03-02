@@ -309,5 +309,5 @@ itemFrequency <- subset(itemFrequency,
     # Plot ####
           plot(rules_iMac_HPLaptop, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
     
-          ##Test
+          
           
