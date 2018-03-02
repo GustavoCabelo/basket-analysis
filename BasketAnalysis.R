@@ -71,6 +71,7 @@ itemFrequency <- subset(itemFrequency,
   tbl2 <- crossTable(tbl2, sort=T)
   tbl2[1:10,1:10]
 }
+
 #--------------------------------------------------------------------------------------------#
 # Modeling    ####
 #--------------------------------------------------------------------------------------------
@@ -308,3 +309,5 @@ itemFrequency <- subset(itemFrequency,
     # Plot ####
           plot(rules_iMac_HPLaptop, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
     
+          
+          # EXAMPLE
