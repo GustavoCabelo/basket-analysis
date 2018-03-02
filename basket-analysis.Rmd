@@ -449,9 +449,10 @@ plot(rules_DellDesktop, method="graph")#,
 The following metrics were adopted as threshold:
 
 * Parameters applied
-    * rules threshold (support, confidence and lift)
-    *	Minimum quantity of items = 2
-    *	Maximum quantity of items = 2
+    * support > 0.015 
+    * confidence > 0.2
+    *	Minimum quantity of items = 3
+    *	Maximum quantity of items = 3
 
 ******
 ### Reccomended products for baskets that contain as first product
@@ -464,3 +465,23 @@ The following metrics were adopted as threshold:
     - confidence: indicates the number of times the IF/THEN statement on the data are true.
     - lift: indicates the ratio between the observed divided by the expected number of occurences.
 
+>1- iMac & HP Laptop 
+```{r,eval=TRUE,echo=FALSE, warning=FALSE, results= FALSE}
+# Create apriori rule "iMac & HP Laptop "
+          rules_iMac_HPLaptop = apriori(transactions, 
+                                 parameter=list(support = 0.015, confidence = 0.2, minlen=3),
+                                 appearance = list("lhs" = c("iMac", "HP Laptop")))
+
+```
+```{r, eval=TRUE, echo=FALSE, warning=FALSE, cache=FALSE}
+options(width = 800)
+          rules_iMac_HPLaptop
+
+  #review the rules and analyse it to filter the rules down to a manageable subset
+          inspect(head(sort(rules_iMac_HPLaptop, by=c("confidence", "lift")),5))
+```
+```{r,eval=TRUE,echo=FALSE, warning=FALSE, fig.align= 'center'}    
+# Plot ####
+          plot(rules_iMac_HPLaptop, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
+    
+```
