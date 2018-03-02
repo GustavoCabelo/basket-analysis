@@ -31,10 +31,10 @@ hist(size(transactions), breaks = 50, col = 'grey', xlab = "items x transactions
 ## Box Plot
 boxplot(size(transactions), outline = FALSE, horizontal=TRUE, main="BoxPlot", xlab="items x transactions")
 
-#List items####
+#List items in a new DF
 itemLabels <- as.data.frame(itemLabels(transactions))
 
-#Pre-process####
+####-------------------------------------------Pre-process-------------------------------------------####
 
 #Check Best Seller items
 {itemFrequencyPlot(transactions, type = c("absolute"), topN = 10, ylab = "item frequency")
@@ -71,131 +71,240 @@ itemFrequency <- subset(itemFrequency,
   tbl2 <- crossTable(tbl2, sort=T)
   tbl2[1:10,1:10]
 }
+#--------------------------------------------------------------------------------------------#
+# Modeling    ####
+#--------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------#
+  ## Association between 2 products ####
+#--------------------------------------------------------------------------------------------       
+            # The next step was to run the “apriori” function in R in order to identify the main basket composition rules associated with the Best Seller items as the "RHS" and the following item to be added in the basket.
+            
+#--------------------------------------------------------------------------------------------#
+    ### General rules  ####
+#-------------------------------------------------------------------------------------------- 
 
-#Modeling####
-#Create Rules regarding transaction in the basket
-{#General Rules: the strongest basket correlations
-  rules = apriori(transactions, 
-                   parameter=list(support = 0.02, confidence = 0.2))
-                   #appearance = list(default="rhs" , "lhs" = "iMac"))
-  rules
-  
-  #trim down the rules to the ones that are more important (****DON't APPLY****)
-    subrules = rules[quality(rules)$lift > 1.5]
-    
-    subrules
-    
-    plot(subrules, measure=c("support","lift"), shading="confidence");
+            # Creating a general rule to understand the correlation strength between items in the transactional set.
 
-  #review the rules and analyse it to filter the rules down to a manageable subset
-  inspect(head(sort(subrules, 
-                    by=c("confidence", "support", "lift")),30));
+      #### General Rule: strongest correlations in the basket ####
+
+              # The following metrics were adopted as threshold:
+              
+              # Parameters applied
+              # - support > 0.02 
+              # - confidence > 0.2
+              # - lift > 1.5
+              # - minlen = 2
+
+        # Create:
+            rules = apriori(transactions, 
+                            parameter=list(support = 0.02, confidence = 0.2, minlen = 2))
+            
+            rules
+        
+        # Subrules: trim down to only those with meaningful lift
+            subrules = rules[quality(rules)$lift > 1.5]
+            
+            subrules
+        
+          # Inspect Subrules
+        
+            # Ordered according to the metrics' sequence given.
+                inspect(head(sort(subrules, 
+                              by=c("support", "confidence", "lift")),20)) 
+          # Plot Subrules 
+            
+            # rules distribution regarding the main metrics   
+                plot(subrules, measure=c("support","lift"), shading="confidence")
+            
+            # items amount per rule   
+                plot(subrules, shading="order", control=list(main ="Two-key plot"))
+
+                
+      #### General rules2: looking for other correlations ####
+                
+        # Looking for other interesting correlations, the top 2 best-seller items were disregarded to avoid biases results as they appear in more than 50% of the first rules 
+             
+              # The following metrics were adopted as threshold:
+                  
+              # Parameters applied
+              # - support > 0.015 
+              # - confidence > 0.2
+              # - lift > 1.5
+              # - minlen = 2
+              # - appearance: none "iMac" or "HP Laptop"
+                
+        # Create:      
+            rules2 = apriori(transactions, 
+                                     parameter=list(support = 0.015, confidence = 0.2, minlen = 2),
+                                     appearance = list("none" = c("iMac", "HP Laptop")))
+            rules2
+            
+        # Subrules2: trim down to only those with meaningful lift
+            subrules2 = rules2[quality(rules2)$lift > 1.5]
+            
+            subrules2
+            
+          # Inspect Subrules2
+            
+            # Ordered according to the metrics' sequence given.
+                inspect(head(sort(subrules2, 
+                              by=c("support", "confidence", "lift")),20)) 
+          # Plot Subrules2 
+            
+            # rules2 distribution regarding the main metrics   
+                plot(subrules2, measure=c("support","lift"), shading="confidence")
+            
+            # items amount per rule   
+                plot(subrules2, shading="order", control=list(main ="Two-key plot"))
+                
+#-------------------------------------------------------------------------------------------- 
+    ### Reccomended products for baskets that contain as first product (LHS) ####
+#-------------------------------------------------------------------------------------------- 
+            # The following metrics were adopted as threshold:
+            
+            # Parameters applied
+            #   - same threshold as general rules (support, confidence and lift)
+            #   -	Minimum quantity of items = 2
+            #   -	Maximum quantity of items = 2
+
+            # Metrics Legend
+
+            #   - LHS: Antecedent
+            #   - RHS: Consequent
+            #   - support: indicates how frequently the item / combination appear in the dataset
+            #   - confidence: indicates the number of times the IF/THEN statement on the data are true.
+            #   - lift: indicates the ratio between the observed divided by the expected number of occurences.
   
-  plot(subrules, shading="order", control=list(main ="Two-key plot"));
-  
-  #Show the reccomended products for baskets that contain "iMac"
-  {rules_iMac = apriori(transactions, 
+    # "LHS" Rules ####  
+        # "iMac" #1 ####
+          rules_iMac = apriori(transactions, 
                         parameter=list(support = 0.02, confidence = 0.2, maxlen = 3),
                         appearance = list(default="rhs" , "lhs" = c("iMac")))
-    rules_iMac
+          rules_iMac
     
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_iMac, 
-                      by=c("confidence", "lift")),10))
-    plot(rules_iMac, method="graph", control=list(type="items"))
-  }
-  #Show the reccomended products for baskets that contain "HP Laptop" #2
-  {
-    rules_HPLaptop = apriori(transactions, 
-                             parameter=list(support = 0.02, confidence = 0.2, minlen=2, maxlen = 3),
-                             appearance = list("lhs" = "HP Laptop"))
-    rules_HPLaptop
+        # "HP Laptop" #2 ####
+          rules_HPLaptop = apriori(transactions, 
+                        parameter=list(support = 0.02, confidence = 0.2, minlen=2, maxlen = 3),
+                        appearance = list("lhs" = "HP Laptop"))
+          rules_HPLaptop
     
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_HPLaptop, 
-                      by=c("confidence", "lift")),10))
-    plot(rules_HPLaptop, method="graph", control=list(type="items"))    
-  }
-  #Show the reccomended products for baskets that contain "CYBERPOWER Gamer Desktop" #3
-  {
-    rules_CyberPower = apriori(transactions, 
-                               parameter=list(support = 0.02, confidence = 0.2, minlen=2, maxlen = 3),
-                               appearance = list("lhs" = "CYBERPOWER Gamer Desktop"))
-    rules_CyberPower
+        # "CYBERPOWER Gamer Desktop" #3 ####
+          rules_CyberPower = apriori(transactions, 
+                        parameter=list(support = 0.02, confidence = 0.2, minlen=2, maxlen = 3),
+                        appearance = list("lhs" = "CYBERPOWER Gamer Desktop"))
+          rules_CyberPower
     
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_CyberPower, 
-                      by=c("confidence", "lift")),10))
-    plot(rules_CyberPower, method="graph", control=list(type="items"))
-  }
-  #Show the reccomended products for baskets that contain "Apple Earpods" #4
-  {rules_AppleEarpods = apriori(transactions, 
-                                parameter=list(support = 0.01, confidence = 0.2, minlen=2, maxlen = 3),
-                                appearance = list(default="rhs" , "lhs" = "Apple Earpods"))
-    rules_AppleEarpods
+        # "Apple Earpods" #4 ####
+          rules_AppleEarpods = apriori(transactions, 
+                        parameter=list(support = 0.01, confidence = 0.2, minlen=2, maxlen = 3),
+                        appearance = list(default="rhs" , "lhs" = "Apple Earpods"))
+          rules_AppleEarpods
     
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_AppleEarpods, 
-                      by=c("confidence", "lift")),10))
-    plot(rules_AppleEarpods, method="graph", control=list(type="items"))
-  }
-  #Show the reccomended products for baskets that contain "Apple MacBook air" #5
-  {rules_MacBookAir = apriori(transactions, 
-                              parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
-                              appearance = list(default="rhs" , "lhs" = "Apple MacBook Air"))
-    rules_MacBookAir
-    
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_MacBookAir, 
-                      by=c("confidence", "lift")),10))
-    plot(rules_MacBookAir, method="graph", control=list(type="items"))
-  }
-  #Show the reccomended products for baskets that contain "Lenovo Desktop Computer" #6
-  {rules_Lenovo = apriori(transactions, 
-                          parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
-                          appearance = list(default="rhs" , "lhs" = "Lenovo Desktop Computer"))
-    rules_Lenovo
-    
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_Lenovo, 
-                      by=c("confidence", "lift")),3))
-    plot(rules_Lenovo, method="graph", control=list(type="items"))
-  }
-  #Show the reccomended products for baskets that contain "Dell Desktop" #7
-  {Rules_DellDesktop = apriori(transactions, 
-                               parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
-                               appearance = list(default="rhs" , "lhs" = "Dell Desktop"))
-    Rules_DellDesktop
-    
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(Rules_DellDesktop, 
-                      by=c("confidence", "lift")),3))
-    plot(Rules_DellDesktop, method="graph", control=list(type="items"))
-  }
-  }
 
-{#Most Powerful itemset relations
-  #1Show the reccomended products for baskets that contain itemset = iMac","HP Laptop"
-  {Rules_iMac_HPLaptop = apriori(transactions, 
-                                       parameter=list(support = 0.01, confidence = 0.15, minlen=3, maxlen = 3),
-                                       appearance = list(default="rhs" , lhs = -c("iMac","HP Laptop")))
-  Rules_iMac_HPLaptop
+        # "Apple MacBook air" #5 ####
+          rules_MacBookAir = apriori(transactions, 
+                        parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
+                        appearance = list(default="rhs" , "lhs" = "Apple MacBook Air"))
+          rules_MacBookAir
+    
+        # "Lenovo Desktop Computer" #6 ####
+          rules_Lenovo = apriori(transactions, 
+                        parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
+                        appearance = list(default="rhs" , "lhs" = "Lenovo Desktop Computer"))
+          rules_Lenovo
+    
+        # "Dell Desktop" #7 ####
+          rules_DellDesktop = apriori(transactions, 
+                        parameter=list(support = 0.01, confidence = 0.15, minlen=2, maxlen = 2),
+                        appearance = list(default="rhs" , "lhs" = "Dell Desktop"))
+          rules_DellDesktop
+    
+    # Inspect ####
+          inspect(head(sort(rules_iMac, by=c("confidence", "lift")),10))
+          inspect(head(sort(rules_HPLaptop, by=c("confidence", "lift")),10))
+          inspect(head(sort(rules_CyberPower, by=c("confidence", "lift")),10))
+          inspect(head(sort(rules_AppleEarpods, by=c("confidence", "lift")),10))
+          inspect(head(sort(rules_MacBookAir, by=c("confidence", "lift")),10))
+          inspect(head(sort(rules_Lenovo, by=c("confidence", "lift")),3))
+          inspect(head(sort(Rules_DellDesktop, by=c("confidence", "lift")),3))
+          
+    # Plot ####
+          plot(rules_iMac, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
+          plot(rules_HPLaptop, method="graph", control=list(type="items"))
+          plot(rules_CyberPower, method="graph", control=list(type="items"))
+          plot(rules_AppleEarpods, method="graph", control=list(type="items"))
+          plot(rules_MacBookAir, method="graph", control=list(type="items"))
+          plot(rules_Lenovo, method="graph", control=list(type="items"))
+          plot(Rules_DellDesktop, method="graph", control=list(type="items"))
+
+
+
+#--------------------------------------------------------------------------------------------
+  ## Association between 3 products ####
+#--------------------------------------------------------------------------------------------          
+          # Step up in the basket analysis for relationship of 3 products in the basket.
+
+#--------------------------------------------------------------------------------------------#
+    ### General rules ####
+#-------------------------------------------------------------------------------------------- 
+
+      #### General Rule: strongest correlations in the basket ####
+          
+              # The following metrics were adopted as threshold:
+              
+              # Parameters applied
+              # - support > 0.015 
+              # - confidence > 0.2
+              # - lift > 1.3
+              # - minlen = 3
+          
+        # Create:          
+            rules_3items = apriori(transactions, 
+                          parameter=list(support = 0.015, confidence = 0.2, minlen = 3))
+            rules_3items
+    
+        # Subrules: trim down to only those with meaningful lift
+            subrules_3items = rules_3items[quality(rules_3items)$lift > 1.3]
+            
+            subrules_3items
+            
+          # Inspect Subrules
+            
+            # Ordered according to the metrics' sequence given.
+              inspect(head(sort(subrules_3items, 
+                              by=c("support", "confidence", "lift")),20)) 
+
+          # Plot Subrules
+              plot(subrules_3items, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
+
+#-------------------------------------------------------------------------------------------- 
+    ### Reccomended products for baskets that contain as first product (LHS) ####
+#-------------------------------------------------------------------------------------------- 
+              # The following metrics were adopted as threshold:
+              
+              # Parameters applied
+              #   - same threshold as general rules (support, confidence and lift)
+              #   -	Minimum quantity of items = 2
+              #   -	Maximum quantity of items = 2
+              
+              # Metrics Legend
+              
+              #   - LHS: Antecedent
+              #   - RHS: Consequent
+              #   - support: indicates how frequently the item / combination appear in the dataset
+              #   - confidence: indicates the number of times the IF/THEN statement on the data are true.
+              #   - lift: indicates the ratio between the observed divided by the expected number of occurences.
+              
+    # "LHS" Rules ####
+        # {iMac","HP Laptop"}####
+          rules_iMac_HPLaptop = apriori(transactions, 
+                                 parameter=list(support = 0.015, confidence = 0.2, minlen=3),
+                                 appearance = list("lhs" = c("iMac", "HP Laptop")))
+          rules_iMac_HPLaptop
   
-  #review the rules and analyse it to filter the rules down to a manageable subset
-  inspect(head(sort(Rules_iMac_HPLaptop, 
-                    by=c("confidence", "lift")),5))
-  plot(Rules_iMacr_HPLaptop, method="graph", control=list(type="items"))
-  }
-
-  #2Show the reccomended products for baskets that contain 2 itemset in lhs, support > 2% and confidence > 20% 
-  {rules_threeitems = apriori(transactions, 
-                   parameter=list(support = 0.02, confidence = 0.2, minlen = 3));
-    rules_threeitems
+    # Inspect ####
+          inspect(head(sort(rules_iMac_HPLaptop, by=c("confidence", "lift")),5))
+  
+    # Plot ####
+          plot(rules_iMac_HPLaptop, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
     
-    #review the rules and analyse it to filter the rules down to a manageable subset
-    inspect(head(sort(rules_threeitems, 
-                      by=c("confidence", "lift")),19));
-  }
-  }
-
-
