@@ -285,8 +285,8 @@ itemFrequency <- subset(itemFrequency,
               
               # Parameters applied
               #   - same threshold as general rules (support, confidence and lift)
-              #   -	Minimum quantity of items = 2
-              #   -	Maximum quantity of items = 2
+              #   -	Minimum quantity of items = 3
+              #   -	Maximum quantity of items = 3 
               
               # Metrics Legend
               
@@ -310,4 +310,3 @@ itemFrequency <- subset(itemFrequency,
           plot(rules_iMac_HPLaptop, measure=c("support","confidence"), shading="lift", engine = 'htmlwidget')
     
           
-          # EXAMPLE
