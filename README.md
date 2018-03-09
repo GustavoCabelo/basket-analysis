@@ -4,13 +4,13 @@
 Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites..
 -----
 # 2 Dataset explanation
-- 2 documents were used for this analysis:
+> 2 documents were used for this analysis:
 
 ## 2.1 Transaction File
-- A CSV dataset with 9835 online transactions
+> A CSV dataset with 9835 online transactions
 
 ## 2.2 List of products
-A PDF file listing all the products available
+> A PDF file listing all the products available
 
   - 125 products
   - 17 products type
