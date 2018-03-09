@@ -62,18 +62,23 @@ Understanding the transaction file
     ## 2 2TB Portable External Hard Drive
     ## 3                   3-Button Mouse
 
-As saw in the summary, there were observations with no transactions (min = 0). I have removed these transaction with 0 items
+As saw in the summary, there were observations with no transactions (min = 0). 
 
-which(size(transactions) == 0)
-transactions <- transactions[-which(size(transactions) == 0),]
+    which(size(transactions) == 0)
+    ## [1] 8707 9506
+
+I have removed these transaction with 0 items.
+
+    transactions <- transactions[-which(size(transactions) == 0),]
 
 Double check if Rows were removed
 
+    which(size(transactions) == 0) # Now we are sure there is no longer transactions with items <=0
+    ## integer(0)
 
-which(size(transactions) == 0) # Now we are sure there is no longer transactions with items <=0
-
-Data Analysis
-Visualization
+# 4 Data Analysis
+## 4.1 Visualization
+-----
 Amount of items per transaction
 Histogram
 
