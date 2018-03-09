@@ -2,7 +2,7 @@
 ## 1.1 Goal
 
 Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites..
-
+-----
 # 2 Dataset explanation
 - 2 documents were used for this analysis:
 
@@ -14,7 +14,7 @@ A PDF file listing all the products available
 
   - 125 products
   - 17 products type
-
+-----
 # 3 Preprocessing
 Loading the libraries
 
@@ -75,17 +75,18 @@ Double check if Rows were removed
 
     which(size(transactions) == 0) # Now we are sure there is no longer transactions with items <=0
     ## integer(0)
-
+-----
 # 4 Data Analysis
 ## 4.1 Visualization
------
-Amount of items per transaction
-Histogram
 
-  hist(size(transactions), breaks = 50, col = 'grey', xlab = "items x transactions", main = "Histogram")
+### 4.1.1 Amount of items per transaction
+
+> Histogram
+
+    hist(size(transactions), breaks = 50, col = 'grey', xlab = "items x transactions", main = "Histogram")
 
 
-Box Plot
+> Box Plot
 
 boxplot(size(transactions), outline = FALSE, horizontal=TRUE, main="BoxPlot", xlab="items x transactions")
 
