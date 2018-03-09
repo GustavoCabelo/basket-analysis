@@ -1,30 +1,32 @@
-# Introduction
-## Goal
+# 1 Introduction
+## 1.1 Goal
 
 Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites..
 
-# Dataset explanation
+# 2 Dataset explanation
 - 2 documents were used for this analysis:
 
-## Transaction File
--- A CSV dataset with 9835 online transactions
+## 2.1 Transaction File
+- A CSV dataset with 9835 online transactions
 
-List of products
+## 2.2 List of products
 A PDF file listing all the products available
 
-125 products
-17 products type
-Preprocessing
+  - 125 products
+  - 17 products type
+
+# 3 Preprocessing
 Loading the libraries
 
-require(dplyr)
-require(magrittr)
-require(arules)
-require(arulesViz)
-require(ggplot2)
-require(gridExtra)
-require(graphics)
-require(corrplot)
+    require(dplyr)
+    require(magrittr)
+    require(arules)
+    require(arulesViz)
+    require(ggplot2)
+    require(gridExtra)
+    require(graphics)
+    require(corrplot)
+
 Loading the transaction file in a "transaction" extension. Using this extension instead as normal DF enables us to analyze the composition of each transaction and create association rules with apriori.
 
 transactions <- read.transactions(paste0(getwd(),"/Files/ElectronidexTransactions2017.csv"), format = c("basket","single"), sep = ",", rm.duplicates = F)
