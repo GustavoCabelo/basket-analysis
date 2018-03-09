@@ -85,7 +85,7 @@ Double check if Rows were removed
 > Histogram
 
     hist(size(transactions), breaks = 50, col = 'grey', xlab = "items x transactions", main = "Histogram")
-![histogram](https://user-images.githubusercontent.com/19245251/37205319-ab246ff6-2394-11e8-9943-2deae0811db7.png)
+![histogram](https://user-images.githubusercontent.com/19245251/37205415-030b9910-2395-11e8-9722-12f1e6cff132.png)
 
 > Box Plot
 
