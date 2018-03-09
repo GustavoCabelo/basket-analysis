@@ -1,7 +1,8 @@
 # 1 Introduction
 ## 1.1 Goal
 
-Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites..
+Conduct a market basket analysis through R to discover any interesting relationships (or associations) between customer’s transactions and the item(s) they’ve purchased. These associations can then be used to drive sales-oriented initiatives such as recommender systems like the ones used by Amazon and other eCommerce sites.
+
 -----
 # 2 Dataset explanation
 > 2 documents were used for this analysis:
