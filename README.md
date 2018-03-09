@@ -316,4 +316,4 @@ The following metrics were adopted as threshold:
     ## [5] {HP Laptop,iMac} => {Acer Desktop}             0.01596664 0.2113055  2.073620 157
 
     #Plot association rules 
- ![3rules](https://user-images.githubusercontent.com/19245251/37207253-6e1926b2-239c-11e8-8c58-e74009e8dd70.png)
+ ![3rules](https://user-images.githubusercontent.com/19245251/37207323-c66f609c-239c-11e8-8b21-cd5edca4c2d1.png)
