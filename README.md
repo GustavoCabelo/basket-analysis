@@ -89,7 +89,7 @@ Double check if Rows were removed
 
 > Box Plot
 
-boxplot(size(transactions), outline = FALSE, horizontal=TRUE, main="BoxPlot", xlab="items x transactions")
+    boxplot(size(transactions), outline = FALSE, horizontal=TRUE, main="BoxPlot", xlab="items x transactions")
 
 In the histogram and in the BoxPlot we can clearly see that the standard transactions have in average between 2 to 6 products 
 Best Seller items
