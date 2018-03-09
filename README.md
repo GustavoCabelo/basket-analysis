@@ -36,31 +36,31 @@ Understanding the transaction file
 
     summary(transactions)
 
-## transactions as itemMatrix in sparse format with
-##  9835 rows (elements/itemsets/transactions) and
-##  125 columns (items) and a density of 0.03506172 
-## 
-## most frequent items:
-##                     iMac                HP Laptop CYBERPOWER Gamer Desktop 
-##                     2519                     1909                     1809 
-##            Apple Earpods        Apple MacBook Air                  (Other) 
-##                     1715                     1530                    33622 
-## 
-## element (itemset/transaction) length distribution:
-## sizes
-##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
-##    2 2163 1647 1294 1021  856  646  540  439  353  247  171  119   77   72 
-##   15   16   17   18   19   20   21   22   23   25   26   27   29   30 
-##   56   41   26   20   10   10   10    5    3    1    1    3    1    1 
-## 
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   0.000   2.000   3.000   4.383   6.000  30.000 
-## 
-## includes extended item information - examples:
-##                             labels
-## 1 1TB Portable External Hard Drive
-## 2 2TB Portable External Hard Drive
-## 3                   3-Button Mouse
+    ## transactions as itemMatrix in sparse format with
+    ##  9835 rows (elements/itemsets/transactions) and
+    ##  125 columns (items) and a density of 0.03506172 
+    ## 
+    ## most frequent items:
+    ##                     iMac                HP Laptop CYBERPOWER Gamer Desktop 
+    ##                     2519                     1909                     1809 
+    ##            Apple Earpods        Apple MacBook Air                  (Other) 
+    ##                     1715                     1530                    33622 
+    ## 
+    ## element (itemset/transaction) length distribution:
+    ## sizes
+    ##    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14 
+    ##    2 2163 1647 1294 1021  856  646  540  439  353  247  171  119   77   72 
+    ##   15   16   17   18   19   20   21   22   23   25   26   27   29   30 
+    ##   56   41   26   20   10   10   10    5    3    1    1    3    1    1 
+    ## 
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   0.000   2.000   3.000   4.383   6.000  30.000 
+    ## 
+    ## includes extended item information - examples:
+    ##                             labels
+    ## 1 1TB Portable External Hard Drive
+    ## 2 2TB Portable External Hard Drive
+    ## 3                   3-Button Mouse
 
 As saw in the summary, there were observations with no transactions (min = 0). I have removed these transaction with 0 items
 
