@@ -126,7 +126,7 @@ Overview about how the bestseller items correlate in the basket purchases with a
 The values where the item crossed with itself represent its ocurrence (%) as standalone items in the purchase basket.
 ![corrmatrix](https://user-images.githubusercontent.com/19245251/37205932-f1827e78-2396-11e8-9e4a-93a49eaeb5b7.png)
 
- 
+----- 
 # 5 Association rules
 ## 5.1 Create rules
 
